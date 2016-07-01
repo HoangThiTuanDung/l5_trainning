@@ -54,7 +54,7 @@ class AuthController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
-            'image' => 'required|image|size:1024'
+            'image' => 'required|image|max:1024'
         ]);
     }
 
@@ -71,18 +71,16 @@ class AuthController extends Controller
         $user->email = $data['email'];
         $user->password = bcrypt($data['password']);
 
-        if ($user->save())
+        if (isset($data['image']))
         {
-            if (isset($data['image']))
-            {
-                $extension = $data['image']->getClientOriginalExtension();
-                $fileName = 'user_' . $user->id . $data['image']->getFilename() . '.' . $extension;
-                Storage::disk('local')->put($fileName, File::get($data['image']));
-            }
-            return $user;
-        } else {
-            return redirect('/login')->with(['flash_message' => 'You have error, please check again!', 'flash_message_type' => 'warning']);;
+            $extension = $data['image']->getClientOriginalExtension();
+            $fileName = 'user_' . time() . $data['image']->getFilename() . '.' . $extension;
+            Storage::disk('public_folder')->put($fileName, File::get($data['image']));
+
+            $user->avatar = 'img/' . $fileName;
         }
+        return $user->save() ? $user : redirect('/login')->with(['flash_message' => 'You have error, please check again!', 'flash_message_type' => 'warning']);
+
 
     }
 }
