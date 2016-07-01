@@ -9,6 +9,7 @@
                 <div class="panel-body">
                     @if(session()->has('flash_message'))
                         <div class="alert alert-{{ session('flash_message_type') }}">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
                             <p>{{ session()->get('flash_message') }}</p>
                         </div>
                     @endif
