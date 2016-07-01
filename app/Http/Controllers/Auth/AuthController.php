@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -52,6 +54,7 @@ class AuthController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
+            'image' => 'required|image|size:1024'
         ]);
     }
 
@@ -63,10 +66,23 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
+        $user = new User;
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->password = bcrypt($data['password']);
+
+        if ($user->save())
+        {
+            if (isset($data['image']))
+            {
+                $extension = $data['image']->getClientOriginalExtension();
+                $fileName = 'user_' . $user->id . $data['image']->getFilename() . '.' . $extension;
+                Storage::disk('local')->put($fileName, File::get($data['image']));
+            }
+            return $user;
+        } else {
+            return redirect('/login')->with(['flash_message' => 'You have error, please check again!', 'flash_message_type' => 'warning']);;
+        }
+
     }
 }
