@@ -31,6 +31,11 @@ class Word extends Model
         return $this->belongsTo(Lesson::class);
     }
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+    
     public static function wordsCorrect($userID, $correct, $cateID)
     {
         return self::whereHas('lessonWords', function ($query) use ($correct, $userID) {

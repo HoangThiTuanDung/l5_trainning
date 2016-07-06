@@ -49,6 +49,10 @@ $(function () {
         var word_id = $(e.target).attr('data-word-id');
         var data = {cur_word: cur_word, lesson_id: lesson_id, word_id: word_id, word_answer_id: word_answer_id, _token: token};
 
+        if ($(e.target).attr('data-type') != undefined) {
+            data.re_learn = $(e.target).attr('data-type');
+        }
+        
         $.ajax({
             url: '/lessons/answer',
             method: 'POST',
@@ -64,6 +68,9 @@ $(function () {
                 }
             }
         }).done(function (resp) {
+            if (resp.msg === 'complete') {
+                window.location.href = '/lessons/' + lesson_id + '/result';
+            }
             $('.panel-body').empty();
             $('.panel-body').append(resp.msg);
             $('.btn-next-word').attr('disabled', true);
