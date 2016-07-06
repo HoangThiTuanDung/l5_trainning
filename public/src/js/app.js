@@ -69,4 +69,74 @@ $(function () {
             $('.btn-next-word').attr('disabled', true);
         });
     });
+
+    $('.panel-body').on('click', '#btn-filter', function (e) {
+        e.preventDefault();
+        var errors = [];
+        var category = $('#category').val();
+        var flag = $('#frm-search').find('.flag:checked').val();
+        var data = {category: category, flag: flag, _token: token};
+
+        if (category == undefined ||category == 0) {
+            errors.push('Please choose category before filter!');
+        }
+
+        if (flag == undefined) {
+            errors.push('Please choose word status before filter!');
+        }
+
+        $('.panel-body #results').empty();
+        $('.panel-body #display-errors').empty();
+
+        if (errors.length == 0) {
+            $.ajax({
+                url: '/words/search',
+                method: 'GET',
+                data: data,
+                dataType: 'JSON',
+                statusCode:{
+                    400: function () {
+                        alert('Error, Please reload page!');
+                    },
+                    401: function () {
+                        alert('Please login!');
+                        window.location.href = "/";
+                    },
+                    422: function (resp) {
+                        var errors = displayError(resp.responseJSON.errors);
+                        $('.panel-body #display-errors').append(errors);
+                    }
+                }
+            }).done(function (resp) {
+                $('.panel-body #results').append(resp.results);
+            });
+        } else {
+            var displayErrors = displayError(errors);
+            $('.panel-body #display-errors').append(displayErrors);
+        }
+    });
 });
+
+function displayError (errors)
+{
+    var html = '';
+    html += '<div class="alert alert-warning">';
+    html += '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>';
+    html += '<strong>You have ' + errors.length + ' error: </strong>';
+    html += '<ul>';
+
+    if (errors.length > 0) {
+        if ($.isArray(errors)) {
+            $.each(errors, function (index, error) {
+                html += '<li>' + error + '</li>';
+            });
+        } else {
+            html += '<li>' + errors + '</li>';
+        }
+    }
+
+    html += '</ul>';
+    html += '</div>';
+
+    return html;
+}
