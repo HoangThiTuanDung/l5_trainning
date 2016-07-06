@@ -21,4 +21,11 @@ Route::get('/home', 'HomeController@index');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('categories', 'CategoriesController', ['only' => ['index', 'show']]);
+
+    Route::post('/lessons/answer', 'LessonsController@answer');
+
+    Route::get('/lessons/partial', 'LessonsController@partial');
+    
+    Route::resource('lessons', 'LessonsController', ['only' => ['show']]);
+
 });
