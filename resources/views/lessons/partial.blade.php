@@ -1,7 +1,7 @@
 @if(count($lesson->words) > 0)
     <div class="row">
         <div class="col-md-2">
-            {{ $lesson->name }} - {{ $wordNumber + 1}}/{{ $totalWord }} {{ $lesson->words->first()->id }}
+            {{ $lesson->name }} - {{ $wordNumber + 1}}/{{ $totalWord }}
         </div>
         <div class="col-md-4">
             <p>{{ $lesson->words->first()->content }}</p>
