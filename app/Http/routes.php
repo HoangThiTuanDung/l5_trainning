@@ -34,4 +34,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/words/search', 'WordsController@search')->name('words.search');
 
+    Route::resource('users', 'UsersController', ['only' => ['show', 'update']]);
+
 });

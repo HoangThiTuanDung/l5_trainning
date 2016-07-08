@@ -50,12 +50,7 @@ class AuthController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
-            'image' => 'required|image|max:1024'
-        ]);
+        return User::validateCreate($data);
     }
 
     /**
@@ -73,14 +68,9 @@ class AuthController extends Controller
 
         if (isset($data['image']))
         {
-            $extension = $data['image']->getClientOriginalExtension();
-            $fileName = 'user_' . time() . $data['image']->getFilename() . '.' . $extension;
-            Storage::disk('public_folder')->put($fileName, File::get($data['image']));
-
-            $user->avatar = 'img/' . $fileName;
+            $fileName = uploadImg($data);
+            $user->avatar = '/img/' . $fileName;
         }
         return $user->save() ? $user : redirect('/login')->with(['flash_message' => 'You have error, please check again!', 'flash_message_type' => 'warning']);
-
-
     }
 }

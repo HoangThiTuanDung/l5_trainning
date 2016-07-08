@@ -45,6 +45,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        return parent::render($request, $e);
+        if ($e instanceof HttpException) {
+            if ($e instanceof CustomException) {
+                $arr = ['statusCode' => 400, 'message' => 'InvalidParam'];
+                return response()->json($arr, 200);
+            }
+            return parent::render($request, $e);
+        } else {
+            return $e->getMessage();
+        }
     }
 }
