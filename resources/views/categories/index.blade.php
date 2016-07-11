@@ -24,6 +24,8 @@
                                 </div>
                             </div>
                             @endforeach
+                        @else
+                            Do not have category
                         @endif
                     </div>
                 </div>

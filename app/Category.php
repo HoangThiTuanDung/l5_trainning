@@ -3,11 +3,16 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Validator;
 
 class Category extends Model
 {
     protected $fillable = [
-        'name'
+        'name', 'description'
+    ];
+
+    public static $rules = [
+        'id' => 'required|integer'
     ];
 
     public function lessons()
@@ -27,7 +32,14 @@ class Category extends Model
                 $q->where('correct', $correct);
             });
         })->where(['user_id' => $userID, 'category_id' => $cateID])->count();
-
+        
         return $data;
+    }
+
+    public static function validateParams($data)
+    {
+         $validate = Validator::make($data, self::$rules);
+
+        return $validate->passes();
     }
 }

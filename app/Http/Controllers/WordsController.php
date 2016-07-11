@@ -18,8 +18,22 @@ class WordsController extends Controller
     {
         $categories = Category::lists('name', 'id')->all();
         array_unshift($categories, "--Choose option--");
-
+        
         return view('words.list', ['categories' => $categories]);
+    }
+
+    public function show($id)
+    {
+        $validate = Word::validateParams(['id' => $id]);
+
+        if ($validate) {
+            $word = Word::with('wordAnswers')->find($id);
+            
+            return view('words.show', ['word' => $word]);
+        } else {
+            return view('errors.404', ['message' => 'Word not found!']);
+        }
+        
     }
 
     public function search(Request $request)
@@ -30,9 +44,8 @@ class WordsController extends Controller
             return response()->json(['errors' => $validateErrors], 422);
         }
 
-        $flag = (int)$request->flag;
-
-        $cateID = (int)$request->category;
+        $flag = $request->flag;
+        $cateID = $request->category_id;
         $userID = Auth::id();
 
         if ($flag == self::ALL) {
@@ -42,9 +55,6 @@ class WordsController extends Controller
         } else {
             $words = Word::wordsCorrect($userID, self::NOT_LEARNED , $cateID);
         }
-
-        $categories = Category::lists('name', 'id')->all();
-        array_unshift($categories, "--Choose option--");
 
         $view = view('words.search', ['words' => $words]);
 

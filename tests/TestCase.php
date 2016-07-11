@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Support\Facades\Artisan;
 
 abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
@@ -9,6 +10,12 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
      */
     protected $baseUrl = 'http://localhost';
 
+    protected function setUp()
+    {
+        parent::setUp();
+        Artisan::call('migrate', array('--database' => 'testing'));
+        Artisan::call('db:seed', array('--database' => 'testing'));
+    }
     /**
      * Creates the application.
      *
@@ -21,5 +28,11 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
         return $app;
+    }
+
+    public function tearDown()
+    {
+        Artisan::call('migrate:reset', array('--database' => 'testing'));
+        parent::tearDown();
     }
 }

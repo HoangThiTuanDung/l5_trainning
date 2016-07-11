@@ -11,6 +11,6 @@ class WordAnswerTableSeeder extends Seeder
      */
     public function run()
     {
-        factory('App\WordAnswer', 20)->create();
+        factory('App\WordAnswer', 10)->create();
     }
 }

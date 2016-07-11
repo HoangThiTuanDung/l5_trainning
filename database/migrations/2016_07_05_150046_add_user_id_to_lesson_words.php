@@ -13,7 +13,7 @@ class AddUserIdToLessonWords extends Migration
     public function up()
     {
         Schema::table('lesson_words', function (Blueprint $table) {
-            $table->integer('user_id')->after('id')->unsigned()->nullable();
+            $table->integer('user_id')->after('id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
         });
     }
