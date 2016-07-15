@@ -3,11 +3,16 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Validator;
 
 class Lesson extends Model
 {
     protected $fillable = [
-        'user_id', 'category_id', 'result'
+        'name', 'user_id', 'category_id', 'result'
+    ];
+
+    public static $rules = [
+        'id' => 'required|integer'
     ];
 
     public function activities()
@@ -43,5 +48,12 @@ class Lesson extends Model
         return LessonWord::whereHas('wordAnswer', function ($query) use ($correct) {
             $query->where('correct', $correct);
         })->where(['user_id' => $userID, 'lesson_id' => $lessonID])->count();
+    }
+
+    public static function validateParams($data)
+    {
+         $validate = Validator::make($data, self::$rules);
+
+        return $validate->passes();
     }
 }

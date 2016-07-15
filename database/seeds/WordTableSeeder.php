@@ -11,6 +11,6 @@ class WordTableSeeder extends Seeder
      */
     public function run()
     {
-        factory('App\Word', 20)->create();
+        factory('App\Word', 10)->create();
     }
 }

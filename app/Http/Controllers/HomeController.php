@@ -31,6 +31,7 @@ class HomeController extends Controller
     public function index()
     {
         $activities = Activity::with('lesson')->where('user_id', Auth::id())->get();
+        
         $totalLearned = DB::table('activities')->where('user_id', Auth::id())->sum('words_numbers');
 
         return view('home', ['user' => Auth::user(), 'activities' => $activities, 'totalLearned' => $totalLearned]);

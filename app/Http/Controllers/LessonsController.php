@@ -12,19 +12,31 @@ use Illuminate\Support\Facades\Auth;
 
 class LessonsController extends Controller
 {
-    public function show($lessonID)
+    public function show($id)
     {
-        $lesson = Lesson::getWord($lessonID);
-        $totalWord = Lesson::find($lessonID)->words->count();
+        $validate = Lesson::validateParams(['id' => $id]);
 
-        return view('lessons.show', ['lesson' => $lesson, 'totalWord' => $totalWord]);
+        if($validate) {
+            $lesson = Lesson::getWord($id);
+            $totalWord = Lesson::find($id)->words->count();
+
+            return view('lessons.show', ['lesson' => $lesson, 'totalWord' => $totalWord]);
+        } else {
+            abort(404);
+        }
     }
 
     public function answer(Request $request)
     {
-        $lessonID = (int)$request->lesson_id;
-        $wordID = (int)$request->word_id;
-        $wordAnswerID = (int)$request->word_answer_id;
+        if (!LessonWord::validateRequest($request->all())) {
+            $validateErrors = LessonWord::geterrors();
+
+            return response()->json(['errors' => $validateErrors], 422);
+        }
+
+        $lessonID = $request->lesson_id;
+        $wordID = $request->word_id;
+        $wordAnswerID = $request->word_answer_id;
 
         $lessonWord = LessonWord::where(['lesson_id' => $lessonID, 'word_id' => $wordID])->first();
 
@@ -40,8 +52,9 @@ class LessonsController extends Controller
         if ($lessonWord->save()) {
             $nextWord = ($request->cur_word) + 1;
             $totalWord = Lesson::find($lessonID)->words->count();
-
+            
             if (($nextWord == $totalWord) || (isset($request->re_learn))) {
+
                 //Update the words which User have learned(word_answer.correct is true) in this lesson
                 $totalWordCorrect = Lesson::wordsCorrect(Auth::id(), $lessonID);
                 $activity = Activity::where(['lesson_id' => $lessonID, 'user_id' => Auth::id()])->get()->first();
@@ -49,6 +62,7 @@ class LessonsController extends Controller
                 if (!count($activity)) {
                     $activity = new Activity;
                 }
+                
                 $activity->lesson_id = $lessonID;
                 $activity->words_numbers = $totalWordCorrect;
                 $activity->user_id = Auth::id();
@@ -65,13 +79,6 @@ class LessonsController extends Controller
         } else {
             return response()->json(['msg' => 'Please reload page and try again!'], 400);
         }
-    }
-
-    public function reLearnWord($wordID)
-    {
-        $word = Word::with('wordAnswers')->find($wordID);
-
-        return view('lessons.re_learn_word', ['word' => $word]);
     }
 
     public function result($lessonID)

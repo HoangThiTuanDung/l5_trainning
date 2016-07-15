@@ -5,6 +5,7 @@
             <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-primary">
                     <div class="panel-heading"></div>
+                    @if(count($word) && count($word->wordAnswers))
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-md-2">
@@ -29,6 +30,9 @@
                         </div>
                         <hr/>
                     </div>
+                    @else
+                    <h3>Word not found</h3>
+                    @endif
                 </div>
             </div>
         </div>

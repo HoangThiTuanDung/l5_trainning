@@ -13,7 +13,7 @@ class AddLessonIdToWords extends Migration
     public function up()
     {
         Schema::table('words', function (Blueprint $table) {
-            $table->integer('lesson_id')->after('category_id')->unsigned()->nullable();
+            $table->integer('lesson_id')->after('category_id')->unsigned();
             $table->foreign('lesson_id')->references('id')->on('lessons');
         });
     }

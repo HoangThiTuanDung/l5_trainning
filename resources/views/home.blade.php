@@ -24,9 +24,10 @@
                     </div>
                     <div class="col-md-9">
                         <section class="row">
-                            <a class="btn btn-info btn-lg" href="#" role="button">Words</a>
-                            <a class="btn btn-info btn-lg" href="#" role="button">Lesson</a>
+                            <a class="btn btn-info btn-lg" href="{{ url('/words') }}" role="button">Words</a>
+                            <a class="btn btn-info btn-lg" href="{{ url('/categories')}}" role="button">Lesson</a>
                         </section>
+                        @if(count($activities))
                         <section class="row">
                             <h2>Activities</h2>
                             <hr>
@@ -34,6 +35,11 @@
                                 <p>Learned {{ $activity->words_numbers }} words in Lesson "{{ $activity->lesson->name }}" - ({{$activity->created_at->format('Y/m/d')}})</p>
                             @endforeach
                         </section>
+                        @else
+                        <section>
+                            <h2>Recently! You haven't learned any word</h2>
+                        </section>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -15,7 +15,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->safeEmail,
-        'password' => bcrypt(str_random(10)),
+        'password' => bcrypt(123123),
         'remember_token' => str_random(10),
     ];
 });
@@ -40,7 +40,8 @@ $factory->define(App\Lesson::class, function (Faker\Generator $faker) {
 $factory->define(App\Word::class, function (Faker\Generator $faker) {
     return [
         'content' => $faker->paragraph,
-        'category_id' => $faker->randomElement(\App\Category::lists('id')->toArray())
+        'category_id' => $faker->randomElement(\App\Category::lists('id')->toArray()),
+        'lesson_id' => $faker->randomElement(\App\Lesson::lists('id')->toArray())
     ];
 });
 
@@ -64,6 +65,7 @@ $factory->define(App\Activity::class, function (Faker\Generator $faker) {
 
 $factory->define(App\LessonWord::class, function (Faker\Generator $faker) {
     return [
+        'user_id' => $faker->randomElement(\App\User::lists('id')->toArray()),
         'lesson_id' => $faker->randomElement(\App\Lesson::lists('id')->toArray()),
         'word_id' => $faker->randomElement(\App\Word::lists('id')->toArray()),
         'word_answer_id' => $faker->randomElement(\App\WordAnswer::lists('id')->toArray())

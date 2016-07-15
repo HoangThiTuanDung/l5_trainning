@@ -24,15 +24,13 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('/lessons/answer', 'LessonsController@answer');
 
-    Route::get('lessons/{lesson_id}/result', 'LessonsController@result');
-
-    Route::get('lessons/{lesson_id}/re_learn', 'LessonsController@reLearnWord')->name('lessons.re_learn');
+    Route::get('lessons/{id}/result', 'LessonsController@result')->where('id', '[0-9]+');
 
     Route::resource('lessons', 'LessonsController', ['only' => ['show']]);
 
-    Route::resource('words', 'WordsController', ['only' => ['index']]);
-
     Route::get('/words/search', 'WordsController@search')->name('words.search');
+
+    Route::resource('words', 'WordsController', ['only' => ['index', 'show']]);
 
     Route::resource('users', 'UsersController', ['only' => ['show', 'update']]);
 

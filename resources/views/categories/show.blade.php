@@ -5,6 +5,7 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-primary">
+                @if(count($category))
                     <div class="panel-heading">{{ $category->name }}</div>
                     <div class="panel-body">
                         <div class="col-md-8">
@@ -22,6 +23,9 @@
                             @endif
                         </div>
                     </div>
+                @else
+                    <h3>Category not found</h3>
+                @endif    
                 </div>
             </div>
         </div>
